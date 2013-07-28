@@ -19,6 +19,7 @@ var requirejsOptions = {
     'jquery.event.drag': 'lib/jquery.event.drag',
     'jquery.event.drop': 'lib/jquery.event.drop',
     'dropzone': "lib/dropzone/downloads/dropzone-amd-module",
+    'leaflet': "lib/leaflet/leaflet",
     'mockup-docsapp': 'js/docsapp',
     'mockup-fakeserver': 'tests/fakeserver',
     'mockup-registry': 'js/registry',
@@ -46,6 +47,7 @@ var requirejsOptions = {
     'mockup-patterns-toggle': 'js/patterns/toggle',
     'mockup-patterns-tooltip': 'js/patterns/tooltip',
     'mockup-patterns-dropzone': 'js/patterns/dropzone',
+    'mockup-patterns-leaflet': 'js/patterns/leaflet',
     'mockup-bundles-widgets': 'js/bundles/widgets',
     'mockup-bundles-toolbar': 'js/bundles/toolbar',
     'mockup-bundles-tiles': 'js/bundles/widgets'

@@ -1,0 +1,13 @@
+@import "mixins.less";
+
+.importCSS() when not (@isBrowser) {
+  @import (less) "../lib/leaflet/leaflet.css";
+  @import (less) "../lib/leaflet/leaflet.ie.css";
+  @import (less) "../lib/leaflet/l.geosearch.css";
+}
+.importCSS() when (@isBrowser) {
+  @import (css) "@{pathPrefix}../lib/leaflet/leaflet.css";
+  @import (css) "@{pathPrefix}../lib/leaflet/leaflet.ie.css";
+  @import (css) "@{pathPrefix}../lib/leaflet/l.geosearch.css";
+}
+.importCSS();
