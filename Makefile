@@ -1,11 +1,12 @@
 GIT = git
 NPM = npm
 
-GRUNT = ./node_modules/.bin/grunt
-BOWER = ./node_modules/.bin/bower
+GRUNT = ./nixenv/bin/grunt
+BOWER = ./nixenv/bin/bower
+NIX_PATH=~/.nix-defexpr/channels/
 
 UNAME := $(shell uname)
-BOWER_CHROME=`which chrome chromium chromium-browser | egrep '^/' | head -1`
+BOWER_CHROME=`which chromium | egrep '^/' | head -1`
 
 all: compile jshint test-ci docs
 
@@ -90,21 +91,27 @@ compile-toolbar:
 	cp lib/dropzone/downloads/images/spritemap@2x.png build/toolbar-spritemap@2x.png
 	sed -i -e 's@images/spritemap@spritemap@g' build/toolbar.min.css
 
+bootstrap-nix:
+	NIX_PATH=${NIX_PATH} nix-build --out-link nixenv dev.nix
+	ln -s ./nixenv/lib/node_modules ./
+
+bootstrap-npm:
+	$(NPM) link --prefix=./node_modules
+	sed -i -e "s@throw new Error('Unknown Prefix @//throw// new Error('Unknown Prefix @g" ./node_modules/lcov-result-merger/index.js
+
 bootstrap:
 	mkdir -p build
 	if test ! -d docs; then $(GIT) clone git://github.com/plone/mockup.git -b gh-pages docs; fi
-	$(NPM) link --prefix=./node_modules
 	$(BOWER) install
-	sed -i -e "s@throw new Error('Unknown Prefix @//throw// new Error('Unknown Prefix @g" ./node_modules/lcov-result-merger/index.js
 
 jshint:
 	$(GRUNT) jshint
 
 test: jshint
-	CHROME_BIN=$(BOWER_CHROME) $(GRUNT) karma:dev --force
+	CHROME_BIN=$(BOWER_CHROME) NODE_PATH=./node_modules $(GRUNT) karma:dev --force
 
 test-ci: jshint
-	$(GRUNT) karma:ci --force
+	NODE_PATH=./node_modules $(GRUNT) karma:ci --force
 
 docs:
 	mkdir -p docs/dev
@@ -146,11 +153,10 @@ docs:
 	sed -i -e 's@images/spritemap@spritemap@g' docs/dev/docs.min.css
 
 clean:
+	if test -f $(BOWER); then $(BOWER) cache clean; fi
 	mkdir -p build
 	rm -rf build
 	rm -rf node_modules
 	rm -rf bower_components
-
-	if test -f $(BOWER); then $(BOWER) cache-clean; fi
 
 .PHONY: compile bootstrap jshint test test-ci docs clean
